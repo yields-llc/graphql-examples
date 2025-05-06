@@ -1,0 +1,16 @@
+{
+  "name": "example-app",
+  "packageManager": "yarn@4.4.1",
+  "type": "module",
+  "scripts": {
+    "example": "dotenv -e .env.example -- tsx examples/listProjects.ts"
+  },
+  "dependencies": {
+    "@app/graphql-client": "file:../client"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "dotenv-cli": "^8.0.0",
+    "tsx": "^4.19.4"
+  }
+}

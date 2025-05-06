@@ -1,0 +1,363 @@
+fragment users_ on users {
+  id
+  username
+  email
+  password_hash
+  created_at
+  updated_at
+}
+
+fragment projects_ on projects {
+  id
+  name
+  description
+  owner_id
+  created_at
+  updated_at
+}
+
+fragment tasks_ on tasks {
+  id
+  title
+  description
+  status
+  project_id
+  assignee_id
+  created_at
+  updated_at
+}
+
+fragment comments_ on comments {
+  id
+  content
+  user_id
+  task_id
+  project_id
+  created_at
+}
+
+fragment task_tags_ on task_tags {
+  id
+  task_id
+  tag_id
+}
+
+fragment activity_logs_ on activity_logs {
+  id
+  user_id
+  action
+  details
+  created_at
+}
+
+query ListProjects(
+  $projectsFilter: projectsFilter,
+  $projectsOrderBy: [projectsOrderBy!],
+  $projectsLimit: Int,
+  $projectsOffset: Int,
+  $projectsCountFilter: projectsFilter,
+  $tasksFilter: tasksFilter,
+  $tasksOrderBy: [tasksOrderBy!],
+  $tasksLimit: Int,
+  $tasksOffset: Int,
+  $tasksCountFilter: tasksFilter,
+  $commentsFilter: commentsFilter,
+  $commentsOrderBy: [commentsOrderBy!],
+  $commentsLimit: Int,
+  $commentsOffset: Int,
+  $commentsCountFilter: commentsFilter,
+  $activity_logsFilter: activity_logsFilter,
+  $activity_logsOrderBy: [activity_logsOrderBy!],
+  $activity_logsLimit: Int,
+  $activity_logsOffset: Int,
+  $activity_logsCountFilter: activity_logsFilter,
+  $tasksFilter2: tasksFilter,
+  $tasksOrderBy2: [tasksOrderBy!],
+  $tasksLimit2: Int,
+  $tasksOffset2: Int,
+  $tagsFilter: task_tagsFilter,
+  $tagsOrderBy: [task_tagsOrderBy!],
+  $tagsLimit: Int,
+  $tagsOffset: Int,
+  $tagsCountFilter: task_tagsFilter,
+  $commentsFilter2: commentsFilter,
+  $commentsOrderBy2: [commentsOrderBy!],
+  $commentsLimit2: Int,
+  $commentsOffset2: Int,
+  $commentsCountFilter2: commentsFilter,
+  $tasksCountFilter2: tasksFilter,
+  $commentsFilter3: commentsFilter,
+  $commentsOrderBy3: [commentsOrderBy!],
+  $commentsLimit3: Int,
+  $commentsOffset3: Int,
+  $commentsCountFilter3: commentsFilter
+) {
+  listProjects {
+    ...projects_
+    owner {
+      ...users_
+      projects(
+        filter: $projectsFilter,
+        orderBy: $projectsOrderBy,
+        limit: $projectsLimit,
+        offset: $projectsOffset
+      ) {
+        ...projects_
+      }
+      projectsCount(
+        filter: $projectsCountFilter
+      )
+      tasks(
+        filter: $tasksFilter,
+        orderBy: $tasksOrderBy,
+        limit: $tasksLimit,
+        offset: $tasksOffset
+      ) {
+        ...tasks_
+      }
+      tasksCount(
+        filter: $tasksCountFilter
+      )
+      comments(
+        filter: $commentsFilter,
+        orderBy: $commentsOrderBy,
+        limit: $commentsLimit,
+        offset: $commentsOffset
+      ) {
+        ...comments_
+      }
+      commentsCount(
+        filter: $commentsCountFilter
+      )
+      activity_logs(
+        filter: $activity_logsFilter,
+        orderBy: $activity_logsOrderBy,
+        limit: $activity_logsLimit,
+        offset: $activity_logsOffset
+      ) {
+        ...activity_logs_
+      }
+      activity_logsCount(
+        filter: $activity_logsCountFilter
+      )
+    }
+    tasks(
+      filter: $tasksFilter2,
+      orderBy: $tasksOrderBy2,
+      limit: $tasksLimit2,
+      offset: $tasksOffset2
+    ) {
+      ...tasks_
+      project {
+        ...projects_
+      }
+      assignee {
+        ...users_
+      }
+      tags(
+        filter: $tagsFilter,
+        orderBy: $tagsOrderBy,
+        limit: $tagsLimit,
+        offset: $tagsOffset
+      ) {
+        ...task_tags_
+      }
+      tagsCount(
+        filter: $tagsCountFilter
+      )
+      comments(
+        filter: $commentsFilter2,
+        orderBy: $commentsOrderBy2,
+        limit: $commentsLimit2,
+        offset: $commentsOffset2
+      ) {
+        ...comments_
+      }
+      commentsCount(
+        filter: $commentsCountFilter2
+      )
+    }
+    tasksCount(
+      filter: $tasksCountFilter2
+    )
+    comments(
+      filter: $commentsFilter3,
+      orderBy: $commentsOrderBy3,
+      limit: $commentsLimit3,
+      offset: $commentsOffset3
+    ) {
+      ...comments_
+      user {
+        ...users_
+      }
+      task {
+        ...tasks_
+      }
+      project {
+        ...projects_
+      }
+    }
+    commentsCount(
+      filter: $commentsCountFilter3
+    )
+  }
+}
+
+mutation UpdateProject(
+  $id: Int,
+  $description: String,
+  $projectsFilter: projectsFilter,
+  $projectsOrderBy: [projectsOrderBy!],
+  $projectsLimit: Int,
+  $projectsOffset: Int,
+  $projectsCountFilter: projectsFilter,
+  $tasksFilter: tasksFilter,
+  $tasksOrderBy: [tasksOrderBy!],
+  $tasksLimit: Int,
+  $tasksOffset: Int,
+  $tasksCountFilter: tasksFilter,
+  $commentsFilter: commentsFilter,
+  $commentsOrderBy: [commentsOrderBy!],
+  $commentsLimit: Int,
+  $commentsOffset: Int,
+  $commentsCountFilter: commentsFilter,
+  $activity_logsFilter: activity_logsFilter,
+  $activity_logsOrderBy: [activity_logsOrderBy!],
+  $activity_logsLimit: Int,
+  $activity_logsOffset: Int,
+  $activity_logsCountFilter: activity_logsFilter,
+  $tasksFilter2: tasksFilter,
+  $tasksOrderBy2: [tasksOrderBy!],
+  $tasksLimit2: Int,
+  $tasksOffset2: Int,
+  $tagsFilter: task_tagsFilter,
+  $tagsOrderBy: [task_tagsOrderBy!],
+  $tagsLimit: Int,
+  $tagsOffset: Int,
+  $tagsCountFilter: task_tagsFilter,
+  $commentsFilter2: commentsFilter,
+  $commentsOrderBy2: [commentsOrderBy!],
+  $commentsLimit2: Int,
+  $commentsOffset2: Int,
+  $commentsCountFilter2: commentsFilter,
+  $tasksCountFilter2: tasksFilter,
+  $commentsFilter3: commentsFilter,
+  $commentsOrderBy3: [commentsOrderBy!],
+  $commentsLimit3: Int,
+  $commentsOffset3: Int,
+  $commentsCountFilter3: commentsFilter
+) {
+  updateProject(
+    id: $id,
+    description: $description
+  ) {
+    ...projects_
+    owner {
+      ...users_
+      projects(
+        filter: $projectsFilter,
+        orderBy: $projectsOrderBy,
+        limit: $projectsLimit,
+        offset: $projectsOffset
+      ) {
+        ...projects_
+      }
+      projectsCount(
+        filter: $projectsCountFilter
+      )
+      tasks(
+        filter: $tasksFilter,
+        orderBy: $tasksOrderBy,
+        limit: $tasksLimit,
+        offset: $tasksOffset
+      ) {
+        ...tasks_
+      }
+      tasksCount(
+        filter: $tasksCountFilter
+      )
+      comments(
+        filter: $commentsFilter,
+        orderBy: $commentsOrderBy,
+        limit: $commentsLimit,
+        offset: $commentsOffset
+      ) {
+        ...comments_
+      }
+      commentsCount(
+        filter: $commentsCountFilter
+      )
+      activity_logs(
+        filter: $activity_logsFilter,
+        orderBy: $activity_logsOrderBy,
+        limit: $activity_logsLimit,
+        offset: $activity_logsOffset
+      ) {
+        ...activity_logs_
+      }
+      activity_logsCount(
+        filter: $activity_logsCountFilter
+      )
+    }
+    tasks(
+      filter: $tasksFilter2,
+      orderBy: $tasksOrderBy2,
+      limit: $tasksLimit2,
+      offset: $tasksOffset2
+    ) {
+      ...tasks_
+      project {
+        ...projects_
+      }
+      assignee {
+        ...users_
+      }
+      tags(
+        filter: $tagsFilter,
+        orderBy: $tagsOrderBy,
+        limit: $tagsLimit,
+        offset: $tagsOffset
+      ) {
+        ...task_tags_
+      }
+      tagsCount(
+        filter: $tagsCountFilter
+      )
+      comments(
+        filter: $commentsFilter2,
+        orderBy: $commentsOrderBy2,
+        limit: $commentsLimit2,
+        offset: $commentsOffset2
+      ) {
+        ...comments_
+      }
+      commentsCount(
+        filter: $commentsCountFilter2
+      )
+    }
+    tasksCount(
+      filter: $tasksCountFilter2
+    )
+    comments(
+      filter: $commentsFilter3,
+      orderBy: $commentsOrderBy3,
+      limit: $commentsLimit3,
+      offset: $commentsOffset3
+    ) {
+      ...comments_
+      user {
+        ...users_
+      }
+      task {
+        ...tasks_
+      }
+      project {
+        ...projects_
+      }
+    }
+    commentsCount(
+      filter: $commentsCountFilter3
+    )
+  }
+}
+

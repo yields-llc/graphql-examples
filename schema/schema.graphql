@@ -1,0 +1,350 @@
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
+
+"""The `Byte` scalar type represents byte value as a Buffer"""
+scalar Bytes
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar Json
+
+"""
+A field whose value is a hexadecimal: https://en.wikipedia.org/wiki/Hexadecimal.
+"""
+scalar Decimal
+
+enum OrderBy {
+  Asc
+  Desc
+}
+
+input projectsFilter {
+  id: BigIntFilter
+  name: StringFilter
+  description: StringFilter
+  owner_id: BigIntFilter
+  created_at: DateTimeFilter
+  updated_at: DateTimeFilter
+  owner: usersFilter
+  tasks: tasksListFilter
+  comments: commentsListFilter
+}
+
+input BigIntFilter {
+  equals: BigInt
+  in: [BigInt!]
+  notIn: [BigInt!]
+  not: BigIntFilter
+  is: BigInt
+  isNot: BigInt
+  lt: BigInt
+  lte: BigInt
+  gt: BigInt
+  gte: BigInt
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  not: StringFilter
+  is: String
+  isNot: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  not: DateTimeFilter
+  is: DateTime
+  isNot: DateTime
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+}
+
+input usersFilter {
+  id: BigIntFilter
+  username: StringFilter
+  email: StringFilter
+  password_hash: StringFilter
+  created_at: DateTimeFilter
+  updated_at: DateTimeFilter
+  projects: projectsListFilter
+  tasks: tasksListFilter
+  comments: commentsListFilter
+  activity_logs: activity_logsListFilter
+}
+
+input projectsListFilter {
+  every: projectsFilter
+  some: projectsFilter
+  none: projectsFilter
+}
+
+input tasksFilter {
+  id: BigIntFilter
+  title: StringFilter
+  description: StringFilter
+  status: StringFilter
+  project_id: BigIntFilter
+  assignee_id: BigIntFilter
+  created_at: DateTimeFilter
+  updated_at: DateTimeFilter
+  project: projectsFilter
+  assignee: usersFilter
+  tags: task_tagsListFilter
+  comments: commentsListFilter
+}
+
+input task_tagsFilter {
+  id: BigIntFilter
+  task_id: BigIntFilter
+  tag_id: BigIntFilter
+  task: tasksFilter
+  tag: tagsFilter
+}
+
+input tagsFilter {
+  id: BigIntFilter
+  name: StringFilter
+  taskTags: task_tagsListFilter
+}
+
+input task_tagsListFilter {
+  every: task_tagsFilter
+  some: task_tagsFilter
+  none: task_tagsFilter
+}
+
+input commentsFilter {
+  id: BigIntFilter
+  content: StringFilter
+  user_id: BigIntFilter
+  task_id: BigIntFilter
+  project_id: BigIntFilter
+  created_at: DateTimeFilter
+  user: usersFilter
+  task: tasksFilter
+  project: projectsFilter
+}
+
+input commentsListFilter {
+  every: commentsFilter
+  some: commentsFilter
+  none: commentsFilter
+}
+
+input tasksListFilter {
+  every: tasksFilter
+  some: tasksFilter
+  none: tasksFilter
+}
+
+input activity_logsFilter {
+  id: BigIntFilter
+  user_id: BigIntFilter
+  action: StringFilter
+  details: JsonFilter
+  created_at: DateTimeFilter
+  user: usersFilter
+}
+
+input JsonFilter {
+  equals: Json
+  in: [Json!]
+  notIn: [Json!]
+  not: JsonFilter
+  is: Json
+  isNot: Json
+}
+
+input activity_logsListFilter {
+  every: activity_logsFilter
+  some: activity_logsFilter
+  none: activity_logsFilter
+}
+
+input projectsOrderBy {
+  id: OrderBy
+  name: OrderBy
+  description: OrderBy
+  owner_id: OrderBy
+  created_at: OrderBy
+  updated_at: OrderBy
+  owner: usersOrderBy
+  tasks: tasksOrderBy
+  comments: commentsOrderBy
+}
+
+input usersOrderBy {
+  id: OrderBy
+  username: OrderBy
+  email: OrderBy
+  password_hash: OrderBy
+  created_at: OrderBy
+  updated_at: OrderBy
+  projects: projectsOrderBy
+  tasks: tasksOrderBy
+  comments: commentsOrderBy
+  activity_logs: activity_logsOrderBy
+}
+
+input tasksOrderBy {
+  id: OrderBy
+  title: OrderBy
+  description: OrderBy
+  status: OrderBy
+  project_id: OrderBy
+  assignee_id: OrderBy
+  created_at: OrderBy
+  updated_at: OrderBy
+  project: projectsOrderBy
+  assignee: usersOrderBy
+  tags: task_tagsOrderBy
+  comments: commentsOrderBy
+}
+
+input task_tagsOrderBy {
+  id: OrderBy
+  task_id: OrderBy
+  tag_id: OrderBy
+  task: tasksOrderBy
+  tag: tagsOrderBy
+}
+
+input tagsOrderBy {
+  id: OrderBy
+  name: OrderBy
+  taskTags: task_tagsOrderBy
+}
+
+input commentsOrderBy {
+  id: OrderBy
+  content: OrderBy
+  user_id: OrderBy
+  task_id: OrderBy
+  project_id: OrderBy
+  created_at: OrderBy
+  user: usersOrderBy
+  task: tasksOrderBy
+  project: projectsOrderBy
+}
+
+input activity_logsOrderBy {
+  id: OrderBy
+  user_id: OrderBy
+  action: OrderBy
+  details: OrderBy
+  created_at: OrderBy
+  user: usersOrderBy
+}
+
+type users {
+  id: ID!
+  username: String!
+  email: String!
+  password_hash: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  projects(filter: projectsFilter, orderBy: [projectsOrderBy!], limit: Int, offset: Int): [projects!]!
+  projectsCount(filter: projectsFilter): Int!
+  tasks(filter: tasksFilter, orderBy: [tasksOrderBy!], limit: Int, offset: Int): [tasks!]!
+  tasksCount(filter: tasksFilter): Int!
+  comments(filter: commentsFilter, orderBy: [commentsOrderBy!], limit: Int, offset: Int): [comments!]!
+  commentsCount(filter: commentsFilter): Int!
+  activity_logs(filter: activity_logsFilter, orderBy: [activity_logsOrderBy!], limit: Int, offset: Int): [activity_logs!]!
+  activity_logsCount(filter: activity_logsFilter): Int!
+}
+
+type projects {
+  id: ID!
+  name: String!
+  description: String
+  owner_id: BigInt!
+  created_at: DateTime!
+  updated_at: DateTime!
+  owner: users!
+  tasks(filter: tasksFilter, orderBy: [tasksOrderBy!], limit: Int, offset: Int): [tasks!]!
+  tasksCount(filter: tasksFilter): Int!
+  comments(filter: commentsFilter, orderBy: [commentsOrderBy!], limit: Int, offset: Int): [comments!]!
+  commentsCount(filter: commentsFilter): Int!
+}
+
+type tasks {
+  id: ID!
+  title: String!
+  description: String
+  status: String!
+  project_id: BigInt!
+  assignee_id: BigInt
+  created_at: DateTime!
+  updated_at: DateTime!
+  project: projects!
+  assignee: users
+  tags(filter: task_tagsFilter, orderBy: [task_tagsOrderBy!], limit: Int, offset: Int): [task_tags!]!
+  tagsCount(filter: task_tagsFilter): Int!
+  comments(filter: commentsFilter, orderBy: [commentsOrderBy!], limit: Int, offset: Int): [comments!]!
+  commentsCount(filter: commentsFilter): Int!
+}
+
+type comments {
+  id: ID!
+  content: String!
+  user_id: BigInt!
+  task_id: BigInt
+  project_id: BigInt
+  created_at: DateTime!
+  user: users!
+  task: tasks
+  project: projects
+}
+
+type tags {
+  id: ID!
+  name: String!
+  taskTags(filter: task_tagsFilter, orderBy: [task_tagsOrderBy!], limit: Int, offset: Int): [task_tags!]!
+  taskTagsCount(filter: task_tagsFilter): Int!
+}
+
+type task_tags {
+  id: ID!
+  task_id: BigInt!
+  tag_id: BigInt!
+  task: tasks!
+  tag: tags!
+}
+
+type activity_logs {
+  id: ID!
+  user_id: BigInt!
+  action: String!
+  details: Json!
+  created_at: DateTime!
+  user: users!
+}
+
+type Query {
+  listProjects: [projects!]
+}
+
+type Mutation {
+  updateProject(id: Int, description: String): projects
+}

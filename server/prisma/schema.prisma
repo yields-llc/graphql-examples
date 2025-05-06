@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator pothos {
+  provider          = "prisma-pothos-types"
+  clientOutput      = "@prisma/generated/client"
+  output            = "generated/types.ts"
+  generateDatamodel = false
+  documentation     = true
+  prismaUtils       = true
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model users {
+  id            BigInt   @id @default(autoincrement()) @map("id")
+  username      String   @unique @map("username")
+  email         String   @unique @map("email")
+  password_hash String   @map("password_hash")
+  created_at    DateTime @default(now()) @map("created_at")
+  updated_at    DateTime @updatedAt @map("updated_at")
+
+  projects      projects[] // リレーション: ユーザーが所有するプロジェクト
+  tasks         tasks[] // リレーション: ユーザーがアサインされたタスク
+  comments      comments[] // リレーション: ユーザーが投稿したコメント
+  activity_logs activity_logs[] // ユーザーのアクティビティログ
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model projects {
+  id          BigInt   @id @default(autoincrement()) @map("id")
+  name        String   @map("name")
+  description String?  @map("description")
+  owner_id    BigInt   @map("owner_id")
+  created_at  DateTime @default(now()) @map("created_at")
+  updated_at  DateTime @updatedAt @map("updated_at")
+
+  owner    users      @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  tasks    tasks[] // このプロジェクトに関連するタスク
+  comments comments[] // プロジェクトのコメント
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model tasks {
+  id          BigInt   @id @default(autoincrement()) @map("id")
+  title       String   @map("title")
+  description String?  @map("description")
+  status      String   @default("pending") @map("status")
+  project_id  BigInt   @map("project_id")
+  assignee_id BigInt?  @map("assignee_id")
+  created_at  DateTime @default(now()) @map("created_at")
+  updated_at  DateTime @updatedAt @map("updated_at")
+
+  project  projects    @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  assignee users?      @relation(fields: [assignee_id], references: [id], onDelete: SetNull)
+  tags     task_tags[] // 中間テーブル
+  comments comments[] // タスクのコメント
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model comments {
+  id         BigInt   @id @default(autoincrement()) @map("id")
+  content    String   @map("content")
+  user_id    BigInt   @map("user_id")
+  task_id    BigInt?  @map("task_id")
+  project_id BigInt?  @map("project_id")
+  created_at DateTime @default(now()) @map("created_at")
+
+  user    users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  task    tasks?    @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  project projects? @relation(fields: [project_id], references: [id], onDelete: Cascade)
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model tags {
+  id   BigInt @id @default(autoincrement()) @map("id")
+  name String @unique @map("name")
+
+  taskTags task_tags[] // 中間テーブルでタスクと関連付け
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model task_tags {
+  id      BigInt @id @default(autoincrement()) @map("id")
+  task_id BigInt @map("task_id")
+  tag_id  BigInt @map("tag_id")
+
+  task tasks @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  tag  tags  @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+}
+
+/// @pothos-generator operation {exclude:["query", "find", "create", "update", "delete", "mutation"]}
+model activity_logs {
+  id         BigInt   @id @default(autoincrement()) @map("id")
+  user_id    BigInt   @map("user_id")
+  action     String   @map("action")
+  details    Json     @map("details")
+  created_at DateTime @default(now()) @map("created_at")
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
