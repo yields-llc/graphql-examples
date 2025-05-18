@@ -10,7 +10,7 @@
     "format:fix": "npx @biomejs/biome format --write",
     "lint": "npx @biomejs/biome lint"
   },
-  "main": "dist/main.js",
+  "main": "dist/main.mjs",
   "types": "dist/main.d.ts",
   "dependencies": {
     "graphql": "^16.10.0",
