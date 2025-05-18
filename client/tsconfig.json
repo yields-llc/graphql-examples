@@ -18,6 +18,6 @@
     "preserveSymlinks": true,
     "noImplicitAny": true
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"],
+  "include": ["*.ts", "**/*.ts"],
+  "exclude": ["node_modules", "vite.config.ts", "codegen.ts"],
 }
